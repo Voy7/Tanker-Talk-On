@@ -13,4 +13,12 @@ export default class Utils {
     const zeros = '0'.repeat(length - num.length)
     return Number(`${num}${zeros}`)
   }
+
+  // Parse TCP message from DCS script to array of JSON objects
+  static parseTCPToJSON(data: string): object | null {
+    const messages = data.split(';')
+    const jsonMessages: any[] = []
+
+    return null
+  }
 }

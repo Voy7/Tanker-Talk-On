@@ -1,7 +1,7 @@
 {
-  "name": "tanker-bot",
-  "version": "1.0.0",
-  "author": "Voy",
+  "name": "tanker-talk-on",
+  "version": "1.0-indev",
+  "author": "Voy7",
   "description": "",
   "main": "build/src/index.js",
   "type": "module",
@@ -9,19 +9,19 @@
     "#root/*": "./src/*.js"
   },
   "scripts": {
-    "dev": "npx nodemon",
-    "build": "rimraf ./build && tsc",
-    "start": "npm run build && node ."
+    "start": "npm run build && cross-env PROJECT_MODE=production node .",
+    "dev": "npm run build && cross-env PROJECT_MODE=dev node .",
+    "build": "rimraf ./build && tsc"
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.21",
     "@types/node": "^18.15.11",
-    "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3"
   },
   "dependencies": {
     "colors": "^1.4.0",
+    "cross-env": "^7.0.3",
     "dgram": "^1.0.1",
     "dotenv": "^16.0.3",
     "fluent-ffmpeg": "^2.1.2",

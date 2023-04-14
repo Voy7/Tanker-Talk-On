@@ -1,6 +1,8 @@
 import net from 'net'
 import Logger from '#root/classes/Logger'
 
+import type SRSClient from '#root/classes/SRS/SRSClient'
+
 const SYNC_MESSAGE = {
   Client: {
     ClientGuid: 'X8DqOG8uPkKuDHfRRK9_QA', // H8DqOG8uPkKuDHfRRK9_QA
@@ -39,23 +41,23 @@ const SYNC_MESSAGE = {
 export default class TCPMessageClient {
   client: net.Socket
 
-  constructor(host: string, port: number, unitID: number, coalition: number, callsign: string, frequency: number) {
+  constructor(srsClient: SRSClient) {
     this.client = new net.Socket()
 
-    Logger.info(`Connecting SRS TCP client to ${host}:${port}...`)
+    Logger.info(`Connecting SRS TCP client to ${srsClient.host}:${srsClient.port}...`)
     
-    this.client.connect(port, host, () => {
+    this.client.connect(srsClient.port, srsClient.host, () => {
       Logger.info('SRS TCP client connected.')
       
-      this.client.setNoDelay(true)
-      const syncMessage = SYNC_MESSAGE
-      syncMessage.Client.RadioInfo.unitId = unitID
-      syncMessage.Client.Name = callsign
-      syncMessage.Client.Coalition = coalition
-      syncMessage.Client.RadioInfo.radios[0].freq = frequency
+      // this.client.setNoDelay(true)
+      // const syncMessage = SYNC_MESSAGE
+      // syncMessage.Client.RadioInfo.unitId = unitID
+      // syncMessage.Client.Name = callsign
+      // syncMessage.Client.Coalition = coalition
+      // syncMessage.Client.RadioInfo.radios[0].freq = frequency
 
-      Logger.info('Sending SRS TCP radio update message...')
-      this.client.write(JSON.stringify(syncMessage) + '\n')
+      // Logger.info('Sending SRS TCP radio update message...')
+      // this.client.write(JSON.stringify(syncMessage) + '\n')
       // DELAY IT BY 1ms, NO FUCKING CLUE WHY I HAVE TO DO THIS, BUT IT WORKS I GUESS
       // setTimeout(() => this.client.write(raw + '\n'), 1)
     })

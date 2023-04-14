@@ -1,45 +1,51 @@
 import net from 'net'
+import Logger from '#root/classes/Logger'
+import Utils from '#root/classes/Utils'
+import Tanker from '#root/classes/Tanker'
 
-import Tanker from './Tanker.js'
-
-// Socket server & message handler
+// Socket server & message handler that talks with DCS hooks script
 export default class SocketServer {
+  server: net.Server
   tankers: Tanker[]
 
   constructor() {
+    this.server = new net.Server()
     this.tankers = []
 
-    const server = net.createServer()
+    // DCS script connects to this server
+    this.server.on('connection', socket => {
+      Logger.info(`TCP connection established with ${socket.remoteAddress}:${socket.remotePort}`)
 
-    server.on('connection', socket => {
-      console.log(`TCP connection established with ${socket.remoteAddress}:${socket.remotePort}`.gray)
-
+      // DCS script sends messages to the server
       socket.on('data', data => {
-        console.log(`Received data: ${data}`.gray)
+        // Parse TCP message from DCS script to array of JSON objects
+        const commands = []
+        data.toString().split(';').forEach(message => {
+          const msg = Utils.parseTCPToJSON(message)
+          if (!msg) return
+          commands.push(msg)
+        })
 
         if (data.toString() == 'cmd=INIT;') {
           console.log('Received INIT command'.green)
         }
-
-        else {
-          console.log('received:', data.toString())
-        }
       })
 
+      // DCS script disconnects
       socket.on('close', () => {
-          console.log(`TCP connection closed with ${socket.remoteAddress}:${socket.remotePort}`.gray)
+        Logger.info(`TCP connection closed with ${socket.remoteAddress}:${socket.remotePort}`)
       })
     })
 
     const port = parseInt(process.env.SOCKET_PORT!) || 8100
-    server.listen(port, () => {
-      console.log(`TCP server listening on port ${port}`.gray)
+    this.server.listen(port, () => {
+      Logger.info(`TCP server listening on port: ${port}`)
     })
   }
 
-  // unitID is number with a length of 9
+  // Add a new tanker / SRS client
   addTanker(unitID: number, coalition: number, callsign: string, frequency: number) {
-    const tanker = new Tanker(unitID, coalition, callsign, frequency)
+    const tanker = new Tanker(unitID, coalition, callsign, frequency, this)
     this.tankers.push(tanker)
   }
 }

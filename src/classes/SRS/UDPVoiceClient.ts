@@ -2,11 +2,13 @@ import dgram from 'dgram'
 import ffmpeg from 'fluent-ffmpeg'
 import Logger from '#root/classes/Logger'
 
+import type SRSClient from '#root/classes/SRS/SRSClient'
+
 // UDP Voice Client
 export default class UDPVoiceClient {
   client: dgram.Socket
 
-  constructor(host: string, port: number, unitID: number, coalition: number, callsign: string, frequency: number) {
+  constructor(srsClient: SRSClient) {
     this.client = dgram.createSocket('udp4')
 
     this.client.on('message', msg => {
