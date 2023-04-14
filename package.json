@@ -1,0 +1,31 @@
+{
+  "name": "tanker-bot",
+  "version": "1.0.0",
+  "author": "Voy",
+  "description": "",
+  "main": "build/src/index.js",
+  "type": "module",
+  "imports": {
+    "#root/*": "./src/*.js"
+  },
+  "scripts": {
+    "dev": "npx nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node ."
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.21",
+    "@types/node": "^18.15.11",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dgram": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "net": "^1.0.2",
+    "rimraf": "^4.4.1"
+  }
+}
