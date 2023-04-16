@@ -19,11 +19,24 @@ export default class SocketServer {
       // DCS script sends messages to the server
       socket.on('data', data => {
         // Parse TCP message from DCS script to array of JSON objects
-        const commands = []
-        data.toString().split(';').forEach(message => {
-          const msg = Utils.parseTCPToJSON(message)
-          if (!msg) return
-          commands.push(msg)
+        data.toString().split(';;').forEach(message => {
+          const command: any = Utils.parseTCPToJSON(message)
+          // console.log(command)
+          if (!command) return
+          
+          // Handle commands
+          if (command.type == 'TANKERS_LIST') {
+            command.dataList.forEach((tanker: any) => {
+              if (!tanker.unitID || !tanker.coalition || !tanker.callsign || !tanker.frequency) return
+              const unitID = parseInt(tanker.unitID)
+              const coalition = parseInt(tanker.coalition)
+              const callsign = tanker.callsign
+              const frequency = Utils.fixedLengthNumber(tanker.frequency, 9)
+
+              const existingTanker = this.getTanker(unitID)
+              if (!existingTanker) this.addTanker(unitID, coalition, callsign, frequency)
+            })
+          }
         })
 
         if (data.toString() == 'cmd=INIT;') {
@@ -47,5 +60,19 @@ export default class SocketServer {
   addTanker(unitID: number, coalition: number, callsign: string, frequency: number) {
     const tanker = new Tanker(unitID, coalition, callsign, frequency, this)
     this.tankers.push(tanker)
+  }
+
+  // Remove a tanker / SRS client
+  removeTanker(unitID: number) {
+    const index = this.tankers.findIndex(tanker => tanker.unitID == unitID)
+    if (index == -1) return
+
+    // this.tankers[index].disconnect()
+    this.tankers.splice(index, 1)
+  }
+
+  // Get a tanker / SRS client
+  getTanker(unitID: number): Tanker | undefined {
+    return this.tankers.find(tanker => tanker.unitID == unitID)
   }
 }

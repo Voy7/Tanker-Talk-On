@@ -49,15 +49,15 @@ export default class TCPMessageClient {
     this.client.connect(srsClient.port, srsClient.host, () => {
       Logger.info('SRS TCP client connected.')
       
-      // this.client.setNoDelay(true)
-      // const syncMessage = SYNC_MESSAGE
-      // syncMessage.Client.RadioInfo.unitId = unitID
-      // syncMessage.Client.Name = callsign
-      // syncMessage.Client.Coalition = coalition
-      // syncMessage.Client.RadioInfo.radios[0].freq = frequency
+      this.client.setNoDelay(true)
+      const syncMessage = SYNC_MESSAGE
+      syncMessage.Client.RadioInfo.unitId = srsClient.tanker.unitID
+      syncMessage.Client.Name = srsClient.tanker.callsign
+      syncMessage.Client.Coalition = srsClient.tanker.coalition
+      syncMessage.Client.RadioInfo.radios[0].freq = srsClient.tanker.frequency
 
-      // Logger.info('Sending SRS TCP radio update message...')
-      // this.client.write(JSON.stringify(syncMessage) + '\n')
+      Logger.info('Sending SRS TCP radio update message...')
+      this.client.write(JSON.stringify(syncMessage) + '\n')
       // DELAY IT BY 1ms, NO FUCKING CLUE WHY I HAVE TO DO THIS, BUT IT WORKS I GUESS
       // setTimeout(() => this.client.write(raw + '\n'), 1)
     })

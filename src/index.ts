@@ -16,8 +16,10 @@ Logger.info(`Starting Tanker-Talk-On v${packageJSON.version}...`)
 // Start socket server that talks with DCS hooks script
 const socketServer = new SocketServer()
 
+import Utils from '#root/classes/Utils'
 // Development mode code
 if (process.env.PROJECT_MODE == 'dev') {
     Logger.info('Running dev mode code...')
-    socketServer.addTanker(100000000, 1, 'Test', 127.000)
+    socketServer.addTanker(1000000, 2, 'Test', 251000000)
+    console.log(socketServer.getTanker(1000000))
 }
