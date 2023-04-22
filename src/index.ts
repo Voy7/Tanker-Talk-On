@@ -21,18 +21,16 @@ audioFiles.compile()
 // Start socket server that talks with DCS hooks script
 const socketServer = new SocketServer(audioFiles)
 
-import Utils from '#root/classes/Utils'
 // Development mode code
 if (process.env.PROJECT_MODE == 'dev') {
     Logger.info('Running dev mode code...')
-    socketServer.addTanker(10000000, 2, 'Test', 251000000)
-    // console.log()
-    const tanker = socketServer.getTanker(10000000)
+    // socketServer.addTanker(1000000, 2, 'Test', 251)
+    // const tanker = socketServer.getTanker(1000000)
 
     setTimeout(() => {
-        Logger.debug('trying audio...')
-        setTimeout(() => tanker?.playAudio('FORWARD_30'), 0)
-        setTimeout(() => tanker?.playAudio('FORWARD_20'), 2000)
-        setTimeout(() => tanker?.playAudio('FORWARD_10'), 5000)
+        // Logger.debug('trying audio...')
+        // setTimeout(() => tanker?.playAudio('FORWARD_30', true, false), 0)
+        // setTimeout(() => tanker?.playAudio('FORWARD_20', true, false), 2000)
+        // setTimeout(() => tanker?.playAudio('FORWARD_10', true, false), 5000)
     }, 3000)
 }

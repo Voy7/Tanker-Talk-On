@@ -27,17 +27,33 @@ export default class SocketServer {
           // console.log(command)
           if (!command) return
           
-          // Handle commands
+          // -- Handle commands --
+          // Current active tankers list
           if (command.type == 'TANKERS_LIST') {
             command.dataList.forEach((tanker: any) => {
               if (!tanker.unitID || !tanker.coalition || !tanker.callsign || !tanker.frequency) return
               const unitID = parseInt(tanker.unitID)
               const coalition = parseInt(tanker.coalition)
               const callsign = tanker.callsign
-              const frequency = Utils.fixedLengthNumber(tanker.frequency, 9)
+              const frequency = parseInt(tanker.frequency)
 
               const existingTanker = this.getTanker(unitID)
               if (!existingTanker) this.addTanker(unitID, coalition, callsign, frequency)
+            })
+          }
+
+          // Messages to play list
+          else if (command.type == 'MESSAGES_LIST') {
+            console.log('MESSAGES_LIST', command.dataList)
+            command.dataList.forEach((message: any) => {
+              if (!message.unitID || !message.msgID || !message.noRepeat || !message.force) return
+              const unitID = parseInt(message.unitID)
+              const msgID = message.msgID
+              const noRepeat = message.noRepeat == 'true'
+              const force = message.force == 'true'
+
+              const tanker = this.getTanker(unitID)
+              if (tanker) tanker.playAudio(msgID, noRepeat, force)
             })
           }
         })

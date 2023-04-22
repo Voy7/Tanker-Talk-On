@@ -18,8 +18,6 @@ export default class SRSClient {
     this.port = parseInt(process.env.SRS_PORT!) || 5002
 
     this.tcpClient = new TCPMessageClient(this)
-    setTimeout(() => {
-      this.udpClient = new UDPVoiceClient(this)
-    }, 1500)
+    this.udpClient = new UDPVoiceClient(this)
   }
 }

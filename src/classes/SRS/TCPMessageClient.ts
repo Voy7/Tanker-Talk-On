@@ -40,10 +40,12 @@ const SYNC_MESSAGE = {
 export default class TCPMessageClient {
   srsClient: SRSClient
   client: net.Socket
+  ready: boolean
 
   constructor(srsClient: SRSClient) {
     this.srsClient = srsClient
     this.client = new net.Socket()
+    this.ready = false
 
     Logger.info(`Connecting SRS TCP client to ${srsClient.host}:${srsClient.port}...`)
     
@@ -60,6 +62,7 @@ export default class TCPMessageClient {
 
       Logger.info('Sending SRS TCP radio update message...')
       this.client.write(JSON.stringify(syncMessage) + '\n')
+      this.ready = true
       // DELAY IT BY 1ms, NO FUCKING CLUE WHY I HAVE TO DO THIS, BUT IT WORKS I GUESS
       // setTimeout(() => this.client.write(raw + '\n'), 1)
     })
