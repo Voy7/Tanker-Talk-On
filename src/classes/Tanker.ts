@@ -21,4 +21,9 @@ export default class Tanker {
     this.socketServer = socketServer
     this.SRSClient = new SRSClient(this)
   }
+
+  // Play audio category/file
+  playAudio(category: string) {
+    this.SRSClient.udpClient.playAudioFile(category)
+  }
 }

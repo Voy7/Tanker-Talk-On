@@ -1,6 +1,5 @@
 import net from 'net'
 import Logger from '#root/classes/Logger'
-
 import type SRSClient from '#root/classes/SRS/SRSClient'
 
 const SYNC_MESSAGE = {
@@ -39,18 +38,21 @@ const SYNC_MESSAGE = {
 }
 
 export default class TCPMessageClient {
+  srsClient: SRSClient
   client: net.Socket
 
   constructor(srsClient: SRSClient) {
+    this.srsClient = srsClient
     this.client = new net.Socket()
 
     Logger.info(`Connecting SRS TCP client to ${srsClient.host}:${srsClient.port}...`)
     
-    this.client.connect(srsClient.port, srsClient.host, () => {
+    this.client.connect(this.srsClient.port, this.srsClient.host, () => {
       Logger.info('SRS TCP client connected.')
       
       this.client.setNoDelay(true)
       const syncMessage = SYNC_MESSAGE
+      syncMessage.Client.ClientGuid = srsClient.tanker.guid
       syncMessage.Client.RadioInfo.unitId = srsClient.tanker.unitID
       syncMessage.Client.Name = srsClient.tanker.callsign
       syncMessage.Client.Coalition = srsClient.tanker.coalition
@@ -60,15 +62,6 @@ export default class TCPMessageClient {
       this.client.write(JSON.stringify(syncMessage) + '\n')
       // DELAY IT BY 1ms, NO FUCKING CLUE WHY I HAVE TO DO THIS, BUT IT WORKS I GUESS
       // setTimeout(() => this.client.write(raw + '\n'), 1)
-    })
-  
-    this.client.on('data', data => {
-      // return
-      // try {
-      //   data = JSON.parse(data.toString())
-      //   console.log(`DATA:`.cyan)
-      //   console.log(data)
-      // } catch { console.log('error in TCP JSON data parse'.red) }
     })
     
     this.client.on('close', () => {

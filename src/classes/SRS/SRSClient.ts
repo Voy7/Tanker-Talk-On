@@ -9,7 +9,7 @@ export default class SRSClient {
   host: string
   port: number
   tcpClient: TCPMessageClient
-  udpClient: UDPVoiceClient
+  udpClient: UDPVoiceClient | any
 
   constructor(tanker: Tanker) {
     this.tanker = tanker
@@ -18,6 +18,8 @@ export default class SRSClient {
     this.port = parseInt(process.env.SRS_PORT!) || 5002
 
     this.tcpClient = new TCPMessageClient(this)
-    this.udpClient = new UDPVoiceClient(this)
+    setTimeout(() => {
+      this.udpClient = new UDPVoiceClient(this)
+    }, 1500)
   }
 }

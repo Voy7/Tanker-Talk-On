@@ -2,13 +2,16 @@ import net from 'net'
 import Logger from '#root/classes/Logger'
 import Utils from '#root/classes/Utils'
 import Tanker from '#root/classes/Tanker'
+import type AudioFiles from '#root/classes/AudioFiles'
 
 // Socket server & message handler that talks with DCS hooks script
 export default class SocketServer {
+  audioFiles: AudioFiles
   server: net.Server
   tankers: Tanker[]
 
-  constructor() {
+  constructor(audioFiles: AudioFiles) {
+    this.audioFiles = audioFiles
     this.server = new net.Server()
     this.tankers = []
 
